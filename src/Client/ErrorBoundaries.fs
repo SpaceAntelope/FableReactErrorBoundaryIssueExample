@@ -13,8 +13,7 @@ module ReactErrorBoundary
 
     type ErrorBoundaryState =
         { HasErrors : bool }
-
-    // See https://github.com/MangelMaxime/Fulma/blob/master/docs/src/Widgets/Showcase.fs
+    
     // See https://reactjs.org/docs/error-boundaries.html
     type ErrorBoundary(props) =
         inherit Component<ErrorBoundaryProps, ErrorBoundaryState>(props)
