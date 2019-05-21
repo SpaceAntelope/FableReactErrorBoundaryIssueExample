@@ -11,37 +11,26 @@ open Thoth.Json
 
 open Shared
 
-// The model holds data that you want to keep track of while the application is running
-// in this case, we are keeping track of a counter
-// we mark it as optional, because initially it will not be available from the client
-// the initial value will be requested from server
 type Model = { Counter: Counter option }
 
-// The Msg type defines what events/actions can occur while the application is running
-// the state of the application changes *only* in reaction to these events
 type Msg =
 | Increment
 | Decrement
 | InitialCountLoaded of Counter
 
-let error (model:Model) _ = 
+(* ERROR COMPONENT *)
+let errorComponent (model:Model) _ = 
         Browser.Dom.console.info("Error component with",model);
         div [] [ str "Rendering error" ]
 
 let initialCounter () = Fetch.fetchAs<Counter> "/api/init"
 
-// defines the initial state and initial command (= side-effect) of the application
 let init () : Model * Cmd<Msg> =
     let initialModel = { Counter = None }
     let loadCountCmd =
         Cmd.OfPromise.perform initialCounter () InitialCountLoaded
     initialModel, loadCountCmd
 
-
-
-// The update function computes the next state of the application based on the current state and the incoming events/messages
-// It can also run side-effects (encoded as commands) like calling the server via Http.
-// these commands in turn, can dispatch messages to which the update function will react.
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     match currentModel.Counter, msg with
     | Some counter, Increment ->
@@ -55,7 +44,6 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         nextModel, Cmd.none
 
     | _ -> currentModel, Cmd.none
-
 
 let safeComponents =
     let components =
@@ -99,7 +87,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
                         str ("Press buttons to manipulate counter: " + show model) 
                         str (if model.Counter.Value.Value = 45 then failwith "You have reached the forbidden number" else "")
                         ] ]
-                    |> ReactErrorBoundary.renderCatchSimple(error model dispatch)             
+                    |> ReactErrorBoundary.renderCatchSimple(errorComponent model dispatch)             
                 Columns.columns []
                     [ Column.column [] [ button "-" (fun _ -> dispatch Decrement) ]
                       Column.column [] [ button "+" (fun _ -> dispatch Increment) ] ] ]
