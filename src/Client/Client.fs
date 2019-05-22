@@ -85,9 +85,9 @@ let view (model : Model) (dispatch : Msg -> unit) =
               [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
                     [ Heading.h3 [] [ 
                         str ("Press buttons to manipulate counter: " + show model) 
-                        str (if model.Counter.Value.Value = 45 then failwith "You have reached the forbidden number" else "")
-                        ] ]
-                    |> ReactErrorBoundary.renderCatchSimple(errorComponent model dispatch)             
+                        str (if model.Counter.Value.Value = 45 then failwith "You have reached the forbidden number" else "") ] 
+                      |> ReactErrorBoundary.renderCatchSimple(errorComponent model dispatch)            
+                    ]                    
                 Columns.columns []
                     [ Column.column [] [ button "-" (fun _ -> dispatch Decrement) ]
                       Column.column [] [ button "+" (fun _ -> dispatch Increment) ] ] ]
@@ -95,6 +95,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
           Footer.footer [ ]
                 [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
                     [ safeComponents ] ] ]
+    
 
 #if DEBUG
 open Elmish.Debug
